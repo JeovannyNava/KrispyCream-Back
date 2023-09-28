@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Sln2_Back.Models;
+using Sln2_Back.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -18,8 +19,9 @@ namespace Sln2_Back.Service
             _configuration = configuration;
         }
       
-        public bool CrearPedido(Pedido pedido)
+        public ResponseAPI CrearPedido(Pedido pedido)
         {
+            ResponseAPI response = new ResponseAPI();
             using (SqlConnection con = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 try
@@ -28,20 +30,23 @@ namespace Sln2_Back.Service
                     string cadena = "insert into pedidos(Nombre,Direccion, Cantidad, DonaId) values('" + pedido.Nombre + "','" + pedido.Direccion  + "','" + pedido.Cantidad + "','" + pedido.IdDona + "')";
                     SqlCommand comando = new SqlCommand(cadena, con);
                     comando.ExecuteNonQuery();
+                    response.Code = 200;
+                    response.message = "Ok";
                 }
 
                 catch (Exception ex)
                 {
                     _ = ex.ToString();
-                    throw;
+                    response.Code = 500;
+                    response.message = ex.ToString();
                 }
                 finally
                 {
                     con.Close();
                 }
-
+               
             }
-            return true;
+            return response;
         }
         public List<Pedido> GetPedidos()
         {

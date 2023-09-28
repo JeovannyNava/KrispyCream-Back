@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Sln2_Back.Models;
 using Sln2_Back.Service;
+using Sln2_Back.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,11 @@ namespace Sln2_Back.Controllers
         }
         [HttpPost]
         [Authorize]
-        public IActionResult Post(Pedido pedido)
-        {
+        public ResponseAPI Post(Pedido pedido)
+            {
             var service = new PedidoService(_configuration);
-            service.CrearPedido(pedido);
-            return Ok();
+            var response = service.CrearPedido(pedido);
+            return response;
         }
         [HttpGet]
         public IActionResult Get()
